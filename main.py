@@ -79,11 +79,13 @@ def load_progress(filename="tagging_progress.csv"):
 def main():
     try:
         # Load the original data
+        print("Loading data...")
         df = pd.read_csv('data.csv')
         aduan_texts_full = df[df['is_aduan'] == 1][['index','full_text']].dropna()
-
+        print(f"Total aduan texts: {len(aduan_texts_full)}")
+        
         # take first 1000 rows
-        aduan_texts_full = aduan_texts_full.head(2)
+        aduan_texts_full = aduan_texts_full.head(1000)
 
         # load .env
         load_dotenv()
