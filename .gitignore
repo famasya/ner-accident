@@ -10,3 +10,6 @@ wheels/
 .venv
 .env
 annotated_*.csv
+processing_log.log
+final_annotated_data_*.csv
+tagging_progress.csv
