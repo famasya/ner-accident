@@ -15,10 +15,6 @@ def main():
     # take first 1000 rows
     aduan_texts_full = aduan_texts_full.head(1000)
 
-    # sample aduan texts
-    aduan_texts_sampled = aduan_texts_full.sample(n=4)
-    print(aduan_texts_sampled)
-
     # load .env
     load_dotenv()
 
@@ -33,10 +29,10 @@ def main():
     }    
     
     model = "google/gemini-2.5-flash-preview"
-    if 'tagged_full_text' not in aduan_texts_sampled.columns:
-        aduan_texts_sampled['tagged_full_text'] = None
+    if 'tagged_full_text' not in aduan_texts_full.columns:
+        aduan_texts_full['tagged_full_text'] = None
 
-    for idx, row in tqdm(aduan_texts_sampled.iterrows(), total=len(aduan_texts_sampled)):
+    for idx, row in tqdm(aduan_texts_full.iterrows(), total=len(aduan_texts_full)):
         data = {
             "model": model,
             "messages": [
@@ -52,7 +48,7 @@ def main():
                 if response.status_code == 200:
                     result = response.json()
                     content = result["choices"][0]["message"]["content"].strip()
-                    aduan_texts_sampled.loc[idx, 'tagged_full_text'] = content
+                    aduan_texts_full.loc[idx, 'tagged_full_text'] = content
                     print(f"generated [{idx}] : {content}")
                     break
                 else:
@@ -61,11 +57,11 @@ def main():
                 print(f"[{idx}] Request failed (attempt {attempt + 1}): {e}")
                 time.sleep(2)  # small delay before retry
         else:
-            aduan_texts_sampled.loc[idx, 'tagged_full_text'] = "ERROR"
+            aduan_texts_full.loc[idx, 'tagged_full_text'] = "ERROR"
 
     # TOKENIZATION
     all_tokens_labels = []
-    for idx, row in tqdm(aduan_texts_sampled.iterrows(), total=len(aduan_texts_sampled)):
+    for idx, row in tqdm(aduan_texts_full.iterrows(), total=len(aduan_texts_full)):
         tagged_text = row['tagged_full_text']
 
         soup = BeautifulSoup(tagged_text, "html.parser")
