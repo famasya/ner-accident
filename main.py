@@ -85,7 +85,7 @@ def main():
         print(f"Total aduan texts: {len(aduan_texts_full)}")
         
         # take first 1000 rows
-        aduan_texts_full = aduan_texts_full.head(1000)
+        # aduan_texts_full = aduan_texts_full.head(1000)
 
         # load .env
         load_dotenv()
